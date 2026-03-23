@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初中生学习助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏导航 -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">学习助手</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span>首页</span>
+                </li>
+                <li class="nav-item" data-page="practice">
+                    <span class="nav-icon">✏️</span>
+                    <span>每日练习</span>
+                </li>
+                <li class="nav-item" data-page="generate">
+                    <span class="nav-icon">📝</span>
+                    <span>组卷</span>
+                </li>
+                <li class="nav-item" data-page="questions">
+                    <span class="nav-icon">📖</span>
+                    <span>题库</span>
+                </li>
+                <li class="nav-item" data-page="wrong">
+                    <span class="nav-icon">❌</span>
+                    <span>错题本</span>
+                </li>
+                <li class="nav-item" data-page="stats">
+                    <span class="nav-icon">📊</span>
+                    <span>学习统计</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 首页 -->
+            <section id="page-home" class="page active">
+                <div class="page-header">
+                    <h1>👋 欢迎回来，同学！</h1>
+                    <p class="date" id="current-date"></p>
+                </div>
+                
+                <div class="dashboard">
+                    <!-- 今日打卡 -->
+                    <div class="card checkin-card">
+                        <div class="card-header">
+                            <h3>📅 今日打卡</h3>
+                        </div>
+                        <div class="checkin-content">
+                            <div class="streak-info">
+                                <div class="streak-days">
+                                    <span class="number" id="streak-days">0</span>
+                                    <span class="label">连续打卡天数</span>
+                                </div>
+                                <div class="total-days">
+                                    <span class="number" id="total-days">0</span>
+                                    <span class="label">累计学习天数</span>
+                                </div>
+                            </div>
+                            <button id="checkin-btn" class="btn btn-primary btn-large">
+                                <span class="btn-icon">✅</span>
+                                <span>今日打卡</span>
+                            </button>
+                            <p class="checkin-status" id="checkin-status">今天还没打卡哦，加油！</p>
+                        </div>
+                    </div>
+
+                    <!-- 今日任务 -->
+                    <div class="card tasks-card">
+                        <div class="card-header">
+                            <h3>🎯 今日任务</h3>
+                        </div>
+                        <div class="tasks-content">
+                            <div class="task-item">
+                                <input type="checkbox" id="task1" class="task-checkbox">
+                                <label for="task1">完成每日练习</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="task2" class="task-checkbox">
+                                <label for="task2">复习错题本</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="task3" class="task-checkbox">
+                                <label for="task3">练习一套试卷</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 学习进度 -->
+                    <div class="card progress-card">
+                        <div class="card-header">
+                            <h3>📈 学习进度</h3>
+                        </div>
+                        <div class="progress-content">
+                            <div class="stat-item">
+                                <span class="stat-label">本周做题</span>
+                                <span class="stat-value" id="weekly-count">0 题</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">本月做题</span>
+                                <span class="stat-value" id="monthly-count">0 题</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">总做题数</span>
+                                <span class="stat-value" id="total-count">0 题</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">正确率</span>
+                                <span class="stat-value" id="accuracy-rate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快捷操作 -->
+                    <div class="card quick-actions">
+                        <div class="card-header">
+                            <h3>⚡ 快捷操作</h3>
+                        </div>
+                        <div class="quick-buttons">
+                            <button class="btn btn-secondary" onclick="showPage('practice')">
+                                <span class="btn-icon">✏️</span>
+                                <span>开始练习</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="showPage('generate')">
+                                <span class="btn-icon">📝</span>
+                                <span>生成试卷</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="showPage('wrong')">
+                                <span class="btn-icon">📖</span>
+                                <span>查看错题</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 每日练习 -->
+            <section id="page-practice" class="page">
+                <div class="page-header">
+                    <h1>✏️ 每日练习</h1>
+                    <p>每天进步一点点，积少成多！</p>
+                </div>
+                
+                <div class="practice-setup" id="practice-setup">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>练习设置</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>选择科目</label>
+                            <select id="practice-subject" class="form-control">
+                                <option value="all">全部科目</option>
+                                <option value="math">数学</option>
+                                <option value="chinese">语文</option>
+                                <option value="english">英语</option>
+                                <option value="physics">物理</option>
+                                <option value="chemistry">化学</option>
+                                <option value="biology">生物</option>
+                                <option value="history">历史</option>
+                                <option value="geography">地理</option>
+                                <option value="politics">政治</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>题目数量</label>
+                            <select id="practice-count" class="form-control">
+                                <option value="5">5 题</option>
+                                <option value="10" selected>10 题</option>
+                                <option value="15">15 题</option>
+                                <option value="20">20 题</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>难度</label>
+                            <select id="practice-difficulty" class="form-control">
+                                <option value="all">全部</option>
+                                <option value="easy">简单</option>
+                                <option value="medium" selected>中等</option>
+                                <option value="hard">困难</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-large" onclick="startPractice()">
+                            <span class="btn-icon">🚀</span>
+                            <span>开始练习</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="practice-area" id="practice-area" style="display: none;">
+                    <div class="practice-header">
+                        <span class="practice-progress">题目 <span id="current-question">1</span> / <span id="total-questions">10</span></span>
+                        <span class="practice-score">得分: <span id="current-score">0</span></span>
+                    </div>
+                    <div class="question-card" id="question-card">
+                        <!-- 题目内容动态生成 -->
+                    </div>
+                    <div class="practice-actions">
+                        <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()" disabled>上一题</button>
+                        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">下一题</button>
+                        <button class="btn btn-success" id="submit-btn" onclick="submitPractice()" style="display: none;">提交</button>
+                    </div>
+                </div>
+
+                <div class="practice-result" id="practice-result" style="display: none;">
+                    <div class="card result-card">
+                        <div class="result-header">
+                            <h2>🎉 练习完成！</h2>
+                        </div>
+                        <div class="result-stats">
+                            <div class="result-item">
+                                <span class="result-label">总题数</span>
+                                <span class="result-value" id="result-total">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">正确</span>
+                                <span class="result-value correct" id="result-correct">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">错误</span>
+                                <span class="result-value wrong" id="result-wrong">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">正确率</span>
+                                <span class="result-value" id="result-accuracy">0%</span>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-primary" onclick="reviewWrong()">查看错题</button>
+                            <button class="btn btn-secondary" onclick="restartPractice()">再来一组</button>
+                            <button class="btn btn-secondary" onclick="showPage('home')">返回首页</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 组卷 -->
+            <section id="page-generate" class="page">
+                <div class="page-header">
+                    <h1>📝 智能组卷</h1>
+                    <p>自定义生成练习试卷</p>
+                </div>
+                
+                <div class="generate-setup">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>试卷设置</h3>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>科目</label>
+                                <select id="exam-subject" class="form-control">
+                                    <option value="math">数学</option>
+                                    <option value="chinese">语文</option>
+                                    <option value="english">英语</option>
+                                    <option value="physics">物理</option>
+                                    <option value="chemistry">化学</option>
+                                    <option value="biology">生物</option>
+                                    <option value="history">历史</option>
+                                    <option value="geography">地理</option>
+                                    <option value="politics">政治</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>试卷名称</label>
+                                <input type="text" id="exam-name" class="form-control" placeholder="例如：数学周末练习">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>选择题数量</label>
+                                <input type="number" id="exam-choice-count" class="form-control" value="10" min="0" max="50">
+                            </div>
+                            <div class="form-group">
+                                <label>填空题数量</label>
+                                <input type="number" id="exam-fill-count" class="form-control" value="5" min="0" max="30">
+                            </div>
+                            <div class="form-group">
+                                <label>解答题数量</label>
+                                <input type="number" id="exam-answer-count" class="form-control" value="3" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>难度分布</label>
+                            <div class="difficulty-distribution">
+                                <div class="difficulty-item">
+                                    <label>简单</label>
+                                    <input type="range" id="diff-easy" min="0" max="100" value="30">
+                                    <span class="difficulty-value">30%</span>
+                                </div>
+                                <div class="difficulty-item">
+                                    <label>中等</label>
+                                    <input type="range" id="diff-medium" min="0" max="100" value="50">
+                                    <span class="difficulty-value">50%</span>
+                                </div>
+                                <div class="difficulty-item">
+                                    <label>困难</label>
+                                    <input type="range" id="diff-hard" min="0" max="100" value="20">
+                                    <span class="difficulty-value">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-large" onclick="generateExam()">
+                            <span class="btn-icon">🎯</span>
+                            <span>生成试卷</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="exam-preview" id="exam-preview" style="display: none;">
+                    <div class="exam-actions-top">
+                        <button class="btn btn-secondary" onclick="printExam()">🖨️ 打印试卷</button>
+                        <button class="btn btn-secondary" onclick="saveExam()">💾 保存试卷</button>
+                        <button class="btn btn-secondary" onclick="startExam()">▶️ 开始答题</button>
+                    </div>
+                    <div class="exam-paper" id="exam-paper">
+                        <!-- 试卷内容动态生成 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 题库 -->
+            <section id="page-questions" class="page">
+                <div class="page-header">
+                    <h1>📖 题库管理</h1>
+                    <p>管理和添加练习题</p>
+                </div>
+                
+                <div class="questions-toolbar">
+                    <div class="filter-group">
+                        <select id="filter-subject" class="form-control" onchange="filterQuestions()">
+                            <option value="all">全部科目</option>
+                            <option value="math">数学</option>
+                            <option value="chinese">语文</option>
+                            <option value="english">英语</option>
+                            <option value="physics">物理</option>
+                            <option value="chemistry">化学</option>
+                            <option value="biology">生物</option>
+                            <option value="history">历史</option>
+                            <option value="geography">地理</option>
+                            <option value="politics">政治</option>
+                        </select>
+                        <select id="filter-type" class="form-control" onchange="filterQuestions()">
+                            <option value="all">全部题型</option>
+                            <option value="choice">选择题</option>
+                            <option value="fill">填空题</option>
+                            <option value="answer">解答题</option>
+                        </select>
+                        <select id="filter-difficulty" class="form-control" onchange="filterQuestions()">
+                            <option value="all">全部难度</option>
+                            <option value="easy">简单</option>
+                            <option value="medium">中等</option>
+                            <option value="hard">困难</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddQuestionModal()">
+                        <span class="btn-icon">➕</span>
+                        <span>添加题目</span>
+                    </button>
+                </div>
+
+                <div class="questions-list" id="questions-list">
+                    <!-- 题目列表动态生成 -->
+                </div>
+            </section>
+
+            <!-- 错题本 -->
+            <section id="page-wrong" class="page">
+                <div class="page-header">
+                    <h1>❌ 错题本</h1>
+                    <p>记录错题，查漏补缺</p>
+                </div>
+                
+                <div class="wrong-stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="wrong-total">0</span>
+                        <span class="stat-label">错题总数</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="wrong-reviewed">0</span>
+                        <span class="stat-label">已复习</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="wrong-pending">0</span>
+                        <span class="stat-label">待复习</span>
+                    </div>
+                </div>
+
+                <div class="wrong-list" id="wrong-list">
+                    <!-- 错题列表动态生成 -->
+                </div>
+            </section>
+
+            <!-- 学习统计 -->
+            <section id="page-stats" class="page">
+                <div class="page-header">
+                    <h1>📊 学习统计</h1>
+                    <p>查看你的学习数据</p>
+                </div>
+                
+                <div class="stats-overview">
+                    <div class="stat-card large">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stats-total-questions">0</span>
+                            <span class="stat-label">总做题数</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stats-correct">0</span>
+                            <span class="stat-label">正确题数</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stats-accuracy">0%</span>
+                            <span class="stat-label">正确率</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stats-streak">0</span>
+                            <span class="stat-label">连续打卡</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-charts">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📅 最近7天学习情况</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="weekly-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📊 科目分布</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="subject-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-history">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📜 学习记录</h3>
+                        </div>
+                        <div class="history-list" id="history-list">
+                            <!-- 学习记录动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 添加题目弹窗 -->
+    <div class="modal" id="add-question-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加新题目</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>科目</label>
+                    <select id="new-question-subject" class="form-control">
+                        <option value="math">数学</option>
+                        <option value="chinese">语文</option>
+                        <option value="english">英语</option>
+                        <option value="physics">物理</option>
+                        <option value="chemistry">化学</option>
+                        <option value="biology">生物</option>
+                        <option value="history">历史</option>
+                        <option value="geography">地理</option>
+                        <option value="politics">政治</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>题型</label>
+                    <select id="new-question-type" class="form-control" onchange="onQuestionTypeChange()">
+                        <option value="choice">选择题</option>
+                        <option value="fill">填空题</option>
+                        <option value="answer">解答题</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>难度</label>
+                    <select id="new-question-difficulty" class="form-control">
+                        <option value="easy">简单</option>
+                        <option value="medium">中等</option>
+                        <option value="hard">困难</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>题目内容</label>
+                    <textarea id="new-question-content" class="form-control" rows="3" placeholder="输入题目内容"></textarea>
+                </div>
+                <div class="form-group" id="choice-options-group">
+                    <label>选项（选择题必填）</label>
+                    <div class="choice-inputs">
+                        <input type="text" class="form-control" id="option-a" placeholder="A. 选项内容">
+                        <input type="text" class="form-control" id="option-b" placeholder="B. 选项内容">
+                        <input type="text" class="form-control" id="option-c" placeholder="C. 选项内容">
+                        <input type="text" class="form-control" id="option-d" placeholder="D. 选项内容">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>正确答案</label>
+                    <input type="text" id="new-question-answer" class="form-control" placeholder="例如：A 或 填空答案">
+                </div>
+                <div class="form-group">
+                    <label>解析</label>
+                    <textarea id="new-question-analysis" class="form-control" rows="2" placeholder="输入题目解析（可选）"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveNewQuestion()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 题目详情弹窗 -->
+    <div class="modal" id="question-detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>题目详情</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="question-detail-content">
+                <!-- 题目详情动态生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
